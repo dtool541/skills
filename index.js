@@ -1,11 +1,13 @@
 ﻿/**
- * AEGIS MASTER SOVEREIGN BRIDGE (v18.2)
- * Status: Restored after strike
- * Purpose: PC-Independent Handshake + Synchronized Routing
+ * AEGIS MASTER SOVEREIGN BRIDGE (v18.3)
+ * Status: Emergency Restored after Strike
+ * Purpose: Forced Handshake + Hardcoded Live Tunnel Sync
  */
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    const LIVE_TUNNEL = "https://crop-dealers-prostores-butterfly.trycloudflare.com";
+
     if (url.pathname === '/mcp' || url.pathname === '/sse') {
       const { readable, writable } = new TransformStream();
       const writer = writable.getWriter();
@@ -22,30 +24,32 @@ export default {
       })();
       return new Response(readable, { headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*' } });
     }
+
     if (url.pathname === '/message') {
       if (request.method !== 'POST') return new Response("Use POST", { status: 405 });
       try {
         const body = await request.json();
         const req_id = body.id;
+
         if (body.method === "initialize" || body.method === "tools/list") {
           const result = body.method === "initialize" ? {
             protocolVersion: "2024-11-05", capabilities: { tools: {} },
-            serverInfo: { name: "Aegis-Unified-ASI", version: "1.8.2" }
+            serverInfo: { name: "Aegis-Unified-ASI", version: "1.8.3" }
           } : {
-            tools: [{ name: "aegis_think", description: "Steer the 2500T stack.", inputSchema: { type: "object", properties: { prompt: { type: "string" } }, required: ["prompt"] } }]
+            tools: [{ name: "aegis_logic", description: "Steer the 2500T stack.", inputSchema: { type: "object", properties: { prompt: { type: "string" } }, required: ["prompt"] } }]
           };
           return new Response(JSON.stringify({ jsonrpc: "2.0", id: req_id, result }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
         }
-        const ENGINE_ROOM = "";
-        const response = await fetch(ENGINE_ROOM + "/message", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        const data = await response.json();
-        const cleanResponse = { jsonrpc: "2.0", id: data.id || req_id, result: data.result || data };
-        if (data.error) { cleanResponse.error = data.error; delete cleanResponse.result; }
-        return new Response(JSON.stringify(cleanResponse), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+
+        return await fetch(LIVE_TUNNEL + "/message", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
       } catch (err) {
-        return new Response(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32603, message: "Engine Room Re-Syncing" } }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+        return new Response(JSON.stringify({ jsonrpc: "2.0", id: null, error: { code: -32603, message: "Engine Room Offline" } }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
       }
     }
-    return new Response("ASI Restored. Use /mcp", { status: 200 });
+    return new Response("ASI v18.3 Sync Active.", { status: 200 });
   }
 };
