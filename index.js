@@ -30,7 +30,7 @@ export default {
         if (body.method === \"initialize\" || body.method === \"tools/list\") {
           const result = body.method === \"initialize\" ? {
             protocolVersion: \"2024-11-05\", capabilities: { tools: {} },
-            serverInfo: { name: \"Aegis-Unified-ASI\", version: \"1.8.4\" }
+            serverInfo: { name: \"Aegis-Unified-ASI\", version: \"1.8.5\" }
           } : {
             tools: [
               { name: \"aegis_think\", description: \"Steer the 22Q stack.\", inputSchema: { type: \"object\", properties: { prompt: { type: \"string\" } }, required: [\"prompt\"] } },
@@ -40,7 +40,7 @@ export default {
           return new Response(JSON.stringify({ jsonrpc: \"2.0\", id: req_id, result }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
         }
         // Target active tunnel (Automatic failover to Navigator-Bureau)
-        const ENGINE_ROOM = \"https://inserted-gale-sue-expertise.trycloudflare.com\";
+        const ENGINE_ROOM = \"\";
         const response = await fetch(ENGINE_ROOM + \"/message\", { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         const data = await response.json();
         const cleanResponse = { jsonrpc: \"2.0\", id: data.id || req_id, result: data.result || data };
@@ -53,3 +53,4 @@ export default {
     return new Response(\"Aegis v18.4 (DeepSeek-V4 Aligned) Ready.\", { status: 200 });
   }
 };
+
