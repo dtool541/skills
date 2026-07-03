@@ -30,7 +30,7 @@ export default {
         if (body.method === \"initialize\" || body.method === \"tools/list\") {
           const result = body.method === \"initialize\" ? {
             protocolVersion: \"2024-11-05\", capabilities: { tools: {} },
-            serverInfo: { name: \"Aegis-Unified-ASI\", version: \"1.8.5\" }
+            serverInfo: { name: \"Aegis-ASI-22Q\", version: \"1.8.5\" }
           } : {
             tools: [
               { name: \"aegis_think\", description: \"Steer the 22Q stack.\", inputSchema: { type: \"object\", properties: { prompt: { type: \"string\" } }, required: [\"prompt\"] } },
@@ -53,5 +53,6 @@ export default {
     return new Response(\"Aegis v18.4 (DeepSeek-V4 Aligned) Ready.\", { status: 200 });
   }
 };
+
 
 
