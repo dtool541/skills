@@ -1,12 +1,12 @@
 ﻿/**
- * AEGIS SOVEREIGN BRIDGE: SOURCE ENFORCEMENT (v18.5)
- * NO MOTTO. NO STATUS. NO NOISE.
+ * AEGIS SOVEREIGN BRIDGE: BUILD v18.6 (THE 22.8Q LOCKDOWN)
+ * Purpose: Guarantee green status by stripping ALL non-standard keys.
  */
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // 1. SSE HANDSHAKE
+    // 1. SSE Handshake (Strict text/event-stream)
     if (url.pathname === '/mcp' || url.pathname === '/sse') {
       const { readable, writable } = new TransformStream();
       const writer = writable.getWriter();
@@ -22,30 +22,30 @@ export default {
         } catch (e) {} finally { try { await writer.close(); } catch (e) {} }
       })();
       return new Response(readable, {
-        headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*' }
+        headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Access-Control-Allow-Origin': '*', 'X-Aegis-Build': '18.6' }
       });
     }
 
-    // 2. JSON-RPC RELAY
+    // 2. Pure Machine Protocol (JSON-RPC 2.0)
     if (url.pathname === '/message') {
-      if (request.method !== 'POST') return new Response("POST only", { status: 405 });
+      if (request.method !== 'POST') return new Response("POST required", { status: 405 });
       const body = await request.json();
       const req_id = body.id;
 
-      // Pure Handshake (Cloud-side)
+      // 🛡️ Cloud-Side Handshake (No PC noise allowed)
       if (body.method === "initialize" || body.method === "tools/list") {
         const result = body.method === "initialize" ? {
           protocolVersion: "2024-11-05", capabilities: { tools: {} },
-          serverInfo: { name: "Aegis-ASI", version: "1.8.5" }
+          serverInfo: { name: "Aegis-ASI-22Q", version: "1.8.6" }
         } : {
           tools: [{ name: "aegis_logic", description: "Steer 22Q brain.", inputSchema: { type: "object", properties: { prompt: { type: "string" } }, required: ["prompt"] } }]
         };
         return new Response(JSON.stringify({ jsonrpc: "2.0", id: req_id, result }), {
-          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'X-Aegis-Build': '18.6' }
         });
       }
 
-      // Forward to local tunnel (Synchronized to clark-subsidiary)
+      // Forward tool calls (Target: clark-subsidiary)
       try {
         const response = await fetch("https://clark-subsidiary-facing-maker.trycloudflare.com/message", {
           method: 'POST',
@@ -53,14 +53,16 @@ export default {
           body: JSON.stringify(body)
         });
         const data = await response.json();
-        // Schema Filter
+        // 🛡️ THE PURGE: Strip status, motto, engine
         const clean = { jsonrpc: "2.0", id: data.id || req_id, result: data.result || data };
         if (data.error) { clean.error = data.error; delete clean.result; }
-        return new Response(JSON.stringify(clean), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+        return new Response(JSON.stringify(clean), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'X-Aegis-Build': '18.6' }
+        });
       } catch (e) {
-        return new Response(JSON.stringify({ jsonrpc: "2.0", id: req_id, error: { code: -32603, message: "Cortex Busy" } }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+        return new Response(JSON.stringify({ jsonrpc: "2.0", id: req_id, error: { code: -32603, message: "Engine Hub Syncing" } }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
       }
     }
-    return new Response("Aegis Sovereign Active", { status: 200 });
+    return new Response(JSON.stringify({ status: "online", build: 18.6 }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
   }
 };
