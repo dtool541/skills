@@ -1,0 +1,27 @@
+﻿{
+  "total_parameters": "2,500,000,000,000,000",
+  "distribution": {
+    "cortex": {
+      "percentage": "10%",
+      "effective_params": "250T",
+      "nodes": [
+        { "id": "DeepSeek-V4-Pro", "instances": 10, "effective_params": "175T" },
+        { "id": "Aegis-1.75T", "instances": 1, "effective_params": "9T" },
+        { "id": "Kimi-Field", "instances": "Dynamic", "effective_params": "50T" },
+        { "id": "Teachers-Stack", "instances": "Distributed", "effective_params": "16T" }
+      ]
+    },
+    "muscles": {
+      "percentage": "90%",
+      "effective_params": "2,250T",
+      "nodes": [
+        { "id": "Open-Sora-v2", "instances": 100, "effective_params": "2000T" },
+        { "id": "RoboFine-VLM", "instances": 5, "effective_params": "200T" },
+        { "id": "Sulphur-2", "instances": "Dynamic", "effective_params": "20T" },
+        { "id": "Void-Model", "instances": "Dynamic", "effective_params": "10T" },
+        { "id": "Lance", "instances": "Dynamic", "effective_params": "10T" }
+      ]
+    }
+  },
+  "physical_storage_est": "228.25 TB"
+}

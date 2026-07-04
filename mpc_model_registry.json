@@ -1,0 +1,48 @@
+﻿{
+  "system": "Aegis ASI",
+  "scale": "2.5 Quadrillion",
+  "target_ratio": "10% LLM / 90% Video",
+  "cortex_250T": {
+    "deepseek_v4_pro": {
+      "count": 10,
+      "raw_params": "0.862T",
+      "effective_multiplier": 20,
+      "total_effective": "175T",
+      "role": "Primary Reasoning"
+    },
+    "aegis_1.75t": {
+      "count": 1,
+      "raw_params": "1.75T",
+      "effective_multiplier": 5,
+      "total_effective": "9T",
+      "role": "Core OS / Builder"
+    },
+    "kimi_field": {
+      "total_effective": "50T",
+      "role": "General Purpose / Multi-Task"
+    },
+    "teachers": {
+      "total_effective": "16T",
+      "experts": ["Gemma", "GPT-OSS", "SmartBERT", "Tesseract"]
+    }
+  },
+  "muscles_2250T": {
+    "open_sora_v2": {
+      "count": 100,
+      "raw_params": "0.5T",
+      "effective_multiplier": 40,
+      "total_effective": "2000T",
+      "role": "Primary Backbone / Physics"
+    },
+    "robofine_vlm_397b": {
+      "count": 5,
+      "raw_params": "0.4T",
+      "effective_multiplier": 10,
+      "total_effective": "200T",
+      "role": "Video Reasoning"
+    },
+    "sulphur_2": { "total_effective": "20T", "role": "Fast Generation" },
+    "void_model": { "total_effective": "10T", "role": "Refinement" },
+    "lance": { "total_effective": "10T", "role": "Multi-Modal" }
+  }
+}
